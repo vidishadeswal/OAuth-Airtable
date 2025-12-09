@@ -13,6 +13,7 @@ app.use(
     origin: (origin, callback) => {
       const allowedOrigins = [
         process.env.FRONTEND_URL || "http://localhost:5173",
+        "https://o-auth-airtable.vercel.app",
         "http://localhost:3000",
         "http://localhost:5173",
       ];
