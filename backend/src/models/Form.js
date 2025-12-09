@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const ConditionSchema = new mongoose.Schema(
   {
     questionKey: String,
@@ -11,7 +10,6 @@ const ConditionSchema = new mongoose.Schema(
   },
   { _id: false }
 );
-
 const ConditionalRulesSchema = new mongoose.Schema(
   {
     logic: {
@@ -22,7 +20,6 @@ const ConditionalRulesSchema = new mongoose.Schema(
   },
   { _id: false }
 );
-
 const QuestionSchema = new mongoose.Schema(
   {
     questionKey: {
@@ -53,11 +50,10 @@ const QuestionSchema = new mongoose.Schema(
       default: false,
     },
     conditionalRules: ConditionalRulesSchema,
-    selectOptions: [String], // For single/multi-select fields
+    selectOptions: [String], 
   },
   { _id: false }
 );
-
 const FormSchema = new mongoose.Schema(
   {
     owner: {
@@ -88,5 +84,4 @@ const FormSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 export default mongoose.model("Form", FormSchema);

@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -11,14 +10,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
-
 export default function AuthErrorPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const error = searchParams.get("error");
   const description = searchParams.get("description");
-
   return (
     <main className="min-h-screen flex items-center justify-center bg-muted p-4">
       <Card className="w-full max-w-md">
@@ -56,4 +52,3 @@ export default function AuthErrorPage() {
     </main>
   );
 }
-

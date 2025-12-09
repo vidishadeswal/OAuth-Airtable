@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const ResponseSchema = new mongoose.Schema(
   {
     formId: {
@@ -30,5 +29,4 @@ const ResponseSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 export default mongoose.model("Response", ResponseSchema);

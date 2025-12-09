@@ -1,12 +1,10 @@
 "use client"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Trash2 } from "lucide-react"
 import type { ConditionalRule, FormFieldConfig } from "@/lib/api"
-
 interface ConditionsEditorProps {
   fields: FormFieldConfig[]
   rules: ConditionalRule[]
@@ -14,7 +12,6 @@ interface ConditionsEditorProps {
   onUpdateRule: (ruleId: string, updates: Partial<ConditionalRule>) => void
   onRemoveRule: (ruleId: string) => void
 }
-
 export function ConditionsEditor({ fields, rules, onAddRule, onUpdateRule, onRemoveRule }: ConditionsEditorProps) {
   const handleAddRule = () => {
     const newRule: ConditionalRule = {
@@ -26,7 +23,6 @@ export function ConditionsEditor({ fields, rules, onAddRule, onUpdateRule, onRem
     }
     onAddRule(newRule)
   }
-
   return (
     <Card>
       <CardHeader className="pb-3">

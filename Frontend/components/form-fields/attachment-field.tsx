@@ -1,12 +1,9 @@
 "use client"
-
 import type React from "react"
-
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
-
 interface AttachmentFieldProps {
   id: string
   label: string
@@ -15,19 +12,16 @@ interface AttachmentFieldProps {
   onChange: (files: File[]) => void
   error?: string
 }
-
 export function AttachmentField({ id, label, required, value, onChange, error }: AttachmentFieldProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     onChange([...value, ...files])
   }
-
   const handleRemove = (index: number) => {
     const newFiles = [...value]
     newFiles.splice(index, 1)
     onChange(newFiles)
   }
-
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>

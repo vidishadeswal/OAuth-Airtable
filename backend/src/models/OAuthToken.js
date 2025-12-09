@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const OAuthTokenSchema = new mongoose.Schema(
   {
     userId: {
@@ -22,5 +21,4 @@ const OAuthTokenSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 export default mongoose.model("OAuthToken", OAuthTokenSchema);

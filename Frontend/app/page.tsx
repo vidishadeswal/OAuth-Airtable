@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -12,15 +11,12 @@ import {
 } from "@/components/ui/card";
 import { getLoginUrl, setAuthToken, getAuthToken } from "@/lib/api";
 import { useAppState } from "@/lib/store";
-
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setAuthenticated } = useAppState();
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
-    // Check for token in URL (after OAuth redirect)
     const token = searchParams.get("token");
     if (token) {
       setAuthToken(token);
@@ -28,15 +24,12 @@ export default function LoginPage() {
       router.push("/dashboard");
       return;
     }
-
-    // Check for existing token
     const existingToken = getAuthToken();
     if (existingToken) {
       setAuthenticated(true);
       router.push("/dashboard");
     }
   }, [searchParams, router, setAuthenticated]);
-
   const handleLogin = async () => {
     setLoading(true);
     try {
@@ -47,7 +40,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
   return (
     <main className="min-h-screen flex items-center justify-center bg-muted p-4">
       <Card className="w-full max-w-md">

@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -11,7 +10,6 @@ import { FieldSelector } from "@/components/field-selector"
 import { FieldConfigCard } from "@/components/field-config-card"
 import { ConditionsEditor } from "@/components/conditions-editor"
 import { useEffect } from "react"
-
 export default function FormBuilderPage() {
   const router = useRouter()
   const {
@@ -27,31 +25,25 @@ export default function FormBuilderPage() {
     updateRule,
     removeRule,
   } = useAppState()
-
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
   useEffect(() => {
     const token = getAuthToken()
     if (!token) {
       router.push("/")
       return
     }
-
     if (!selectedBase || !selectedTable) {
       router.push("/dashboard")
     }
   }, [router, selectedBase, selectedTable])
-
   const handleSave = async () => {
     if (!selectedBase || !selectedTable || selectedFields.length === 0) {
       setError("Please add at least one field")
       return
     }
-
     setSaving(true)
     setError(null)
-
     try {
       const form = await createForm({
         baseId: selectedBase.id,
@@ -70,11 +62,9 @@ export default function FormBuilderPage() {
       setSaving(false)
     }
   }
-
   if (!selectedBase || !selectedTable) {
     return null
   }
-
   return (
     <main className="min-h-screen bg-muted p-4">
       <div className="max-w-4xl mx-auto">
@@ -96,7 +86,6 @@ export default function FormBuilderPage() {
             Save Form
           </Button>
         </div>
-
         {error && (
           <Card className="mb-4 border-destructive">
             <CardContent className="pt-4">
@@ -104,7 +93,6 @@ export default function FormBuilderPage() {
             </CardContent>
           </Card>
         )}
-
         <div className="grid md:grid-cols-3 gap-4">
           {/* Field Selector */}
           <div className="md:col-span-1">
@@ -114,7 +102,6 @@ export default function FormBuilderPage() {
               onAddField={addField}
             />
           </div>
-
           {/* Form Configuration */}
           <div className="md:col-span-2 space-y-4">
             <Card>
@@ -132,7 +119,6 @@ export default function FormBuilderPage() {
                 )}
               </CardContent>
             </Card>
-
             <ConditionsEditor
               fields={selectedFields}
               rules={rules}

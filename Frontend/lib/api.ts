@@ -1,80 +1,63 @@
-// API client for communicating with the backend
-
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
-
 interface ApiError {
   message: string;
   status: number;
   error?: string;
 }
-
 async function fetchApi<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
-
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(typeof options.headers === "object" && options.headers !== null && !Array.isArray(options.headers) ? options.headers as Record<string, string> : {}),
   };
-
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
-
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
   });
-
   if (!response.ok) {
     let errorMessage = "An error occurred";
     try {
       const errorData = await response.json();
       errorMessage = errorData.error || errorData.message || errorMessage;
     } catch {
-      // If response is not JSON, try to get text
       try {
         errorMessage = await response.text();
       } catch {
         errorMessage = `HTTP ${response.status}: ${response.statusText}`;
       }
     }
-    
     const error: ApiError = {
       message: errorMessage,
       status: response.status,
     };
     throw error;
   }
-
   return response.json();
 }
-
-// Auth
 export function getLoginUrl(): Promise<string> {
   return fetchApi<{ oauthUrl: string }>("/auth/oauth-url").then(
     (data) => data.oauthUrl
   );
 }
-
 export function setAuthToken(token: string): void {
   localStorage.setItem("auth_token", token);
 }
-
 export function getAuthToken(): string | null {
   return typeof window !== "undefined"
     ? localStorage.getItem("auth_token")
     : null;
 }
-
 export function clearAuthToken(): void {
   localStorage.removeItem("auth_token");
 }
-
 export async function getProfile(): Promise<{
   id: string;
   email: string;
@@ -83,23 +66,18 @@ export async function getProfile(): Promise<{
 }> {
   return fetchApi("/auth/me");
 }
-
 export async function logoutUser(): Promise<void> {
   await fetchApi("/auth/logout", { method: "POST" });
   clearAuthToken();
 }
-
-// Airtable
 export interface AirtableBase {
   id: string;
   name: string;
 }
-
 export interface AirtableTable {
   id: string;
   name: string;
 }
-
 export interface AirtableField {
   id: string;
   name: string;
@@ -114,19 +92,16 @@ export interface AirtableField {
     choices?: { id: string; name: string; color?: string }[];
   };
 }
-
 export async function fetchBases(): Promise<AirtableBase[]> {
   const response = await fetchApi<{ bases: AirtableBase[] }>("/forms/airtable/bases");
   return response.bases || [];
 }
-
 export async function fetchTables(baseId: string): Promise<AirtableTable[]> {
   const response = await fetchApi<{ tables: AirtableTable[] }>(
     `/forms/airtable/bases/${baseId}/tables`
   );
   return response.tables || [];
 }
-
 export async function fetchFields(
   baseId: string,
   tableId: string
@@ -136,8 +111,6 @@ export async function fetchFields(
   );
   return response.fields || [];
 }
-
-// Forms
 export interface FormFieldConfig {
   fieldId: string;
   fieldName: string;
@@ -146,7 +119,6 @@ export interface FormFieldConfig {
   required: boolean;
   options?: { id: string; name: string; color?: string }[];
 }
-
 export interface ConditionalRule {
   id: string;
   sourceFieldId: string;
@@ -154,7 +126,6 @@ export interface ConditionalRule {
   value: string;
   logic: "AND" | "OR";
 }
-
 export interface FormSchema {
   formId: string;
   baseId: string;
@@ -167,17 +138,14 @@ export interface FormSchema {
   rules: ConditionalRule[];
   createdAt?: string;
 }
-
 export interface FormResponse {
   submissionId: string;
   createdAt: string;
   data: Record<string, unknown>;
 }
-
 export async function createForm(
   form: Omit<FormSchema, "formId" | "createdAt">
 ): Promise<FormSchema> {
-  // Transform frontend form structure to backend format
   const backendForm = {
     name: form.name || `${form.baseId} - ${form.tableId}`,
     description: form.description || "",
@@ -186,10 +154,8 @@ export async function createForm(
     baseName: form.baseName || "",
     tableName: form.tableName || "",
     questions: form.fields.map((field) => {
-      // Map conditional rules to backend format
       const fieldRules = form.rules.filter((r) => r.sourceFieldId === field.fieldId);
       let conditionalRules = null;
-      
       if (fieldRules.length > 0) {
         conditionalRules = {
           logic: fieldRules[0].logic || "AND",
@@ -200,7 +166,6 @@ export async function createForm(
           })),
         };
       }
-
       return {
         questionKey: field.fieldId,
         fieldId: field.fieldId,
@@ -212,13 +177,10 @@ export async function createForm(
       };
     }),
   };
-
   const response = await fetchApi<any>("/forms", {
     method: "POST",
     body: JSON.stringify(backendForm),
   });
-
-  // Transform backend response to frontend format
   return {
     formId: response._id || response.id,
     baseId: response.airtableBaseId,
@@ -246,11 +208,8 @@ export async function createForm(
     ) || [],
   };
 }
-
 export async function fetchForm(formId: string): Promise<FormSchema> {
   const response = await fetchApi<any>(`/forms/${formId}`);
-  
-  // Transform backend response to frontend format
   return {
     formId: response._id || response.id,
     baseId: response.airtableBaseId,
@@ -278,7 +237,6 @@ export async function fetchForm(formId: string): Promise<FormSchema> {
     ) || [],
   };
 }
-
 export async function listForms(): Promise<FormSchema[]> {
   const response = await fetchApi<{ forms: any[] }>("/forms");
   return (response.forms || []).map((form: any) => ({
@@ -293,7 +251,6 @@ export async function listForms(): Promise<FormSchema[]> {
     rules: [],
   }));
 }
-
 export async function updateForm(
   formId: string,
   form: Partial<FormSchema>
@@ -303,11 +260,9 @@ export async function updateForm(
     body: JSON.stringify(form),
   });
 }
-
 export async function deleteForm(formId: string): Promise<void> {
   await fetchApi(`/forms/${formId}`, { method: "DELETE" });
 }
-
 export async function submitFormResponse(
   formId: string,
   data: Record<string, unknown>
@@ -321,7 +276,6 @@ export async function submitFormResponse(
   );
   return { id: response.responseId || response.airtableRecordId };
 }
-
 export async function fetchFormResponses(
   formId: string
 ): Promise<FormResponse[]> {
@@ -332,7 +286,6 @@ export async function fetchFormResponses(
     data: r.answers || {},
   }));
 }
-
 export async function evaluateConditionalLogic(
   formId: string,
   answersSoFar: Record<string, unknown>

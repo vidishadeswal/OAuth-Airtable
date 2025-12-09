@@ -1,15 +1,12 @@
 "use client"
-
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-
 interface SelectOption {
   id: string
   name: string
   color?: string
 }
-
 interface SelectFieldProps {
   id: string
   label: string
@@ -20,11 +17,9 @@ interface SelectFieldProps {
   onChange: (value: string | string[]) => void
   error?: string
 }
-
 export function SelectField({ id, label, required, multiple, options, value, onChange, error }: SelectFieldProps) {
   if (multiple) {
     const selectedValues = Array.isArray(value) ? value : []
-
     const handleCheckChange = (optionId: string, checked: boolean) => {
       if (checked) {
         onChange([...selectedValues, optionId])
@@ -32,7 +27,6 @@ export function SelectField({ id, label, required, multiple, options, value, onC
         onChange(selectedValues.filter((v) => v !== optionId))
       }
     }
-
     return (
       <div className="space-y-2">
         <Label>
@@ -57,7 +51,6 @@ export function SelectField({ id, label, required, multiple, options, value, onC
       </div>
     )
   }
-
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>

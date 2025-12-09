@@ -1,21 +1,16 @@
 "use client"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus } from "lucide-react"
 import type { AirtableField } from "@/lib/api"
-
 interface FieldSelectorProps {
   fields: AirtableField[]
   selectedFieldIds: string[]
   onAddField: (field: AirtableField) => void
 }
-
 const SUPPORTED_TYPES = ["singleLineText", "multilineText", "singleSelect", "multipleSelect", "attachment"]
-
 export function FieldSelector({ fields, selectedFieldIds, onAddField }: FieldSelectorProps) {
   const availableFields = fields.filter((f) => !selectedFieldIds.includes(f.id) && SUPPORTED_TYPES.includes(f.type))
-
   const getFieldTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
       singleLineText: "Short Text",
@@ -26,7 +21,6 @@ export function FieldSelector({ fields, selectedFieldIds, onAddField }: FieldSel
     }
     return labels[type] || type
   }
-
   return (
     <Card>
       <CardHeader className="pb-3">

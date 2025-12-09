@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -7,25 +6,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { fetchFormResponses, fetchForm, getAuthToken, type FormResponse, type FormSchema } from "@/lib/api"
-
 export default function ResponsesPage() {
   const params = useParams()
   const router = useRouter()
   const formId = params.formId as string
-
   const [form, setForm] = useState<FormSchema | null>(null)
   const [responses, setResponses] = useState<FormResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedResponse, setSelectedResponse] = useState<FormResponse | null>(null)
-
   useEffect(() => {
     const token = getAuthToken()
     if (!token) {
       router.push("/")
       return
     }
-
     Promise.all([fetchForm(formId), fetchFormResponses(formId)])
       .then(([formData, responsesData]) => {
         setForm(formData)
@@ -34,7 +29,6 @@ export default function ResponsesPage() {
       .catch(() => setError("Failed to load responses"))
       .finally(() => setLoading(false))
   }, [formId, router])
-
   const getPreview = (data: Record<string, unknown>): string => {
     const values = Object.values(data)
     const preview = values
@@ -43,12 +37,10 @@ export default function ResponsesPage() {
       .join(", ")
     return preview.length > 50 ? preview.slice(0, 50) + "..." : preview || "No preview"
   }
-
   const getFieldLabel = (fieldId: string): string => {
     const field = form?.fields.find((f) => f.fieldId === fieldId)
     return field?.label || fieldId
   }
-
   const formatValue = (value: unknown): string => {
     if (Array.isArray(value)) {
       return value.join(", ")
@@ -58,7 +50,6 @@ export default function ResponsesPage() {
     }
     return String(value || "-")
   }
-
   if (loading) {
     return (
       <main className="min-h-screen bg-muted p-4 flex items-center justify-center">
@@ -66,7 +57,6 @@ export default function ResponsesPage() {
       </main>
     )
   }
-
   return (
     <main className="min-h-screen bg-muted p-4">
       <div className="max-w-3xl mx-auto">
@@ -80,7 +70,6 @@ export default function ResponsesPage() {
             <p className="text-sm text-muted-foreground">{responses.length} responses</p>
           </div>
         </div>
-
         {error && (
           <Card className="mb-4 border-destructive">
             <CardContent className="pt-4">
@@ -88,7 +77,6 @@ export default function ResponsesPage() {
             </CardContent>
           </Card>
         )}
-
         <Card>
           <CardHeader>
             <CardTitle className="text-base">All Responses</CardTitle>
@@ -116,7 +104,6 @@ export default function ResponsesPage() {
             )}
           </CardContent>
         </Card>
-
         {/* Response Detail Dialog */}
         <Dialog open={!!selectedResponse} onOpenChange={() => setSelectedResponse(null)}>
           <DialogContent className="max-w-lg">

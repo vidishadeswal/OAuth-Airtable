@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,6 @@ import {
   type AirtableTable,
 } from "@/lib/api";
 import { useAppState } from "@/lib/store";
-
 export default function DashboardPage() {
   const router = useRouter();
   const {
@@ -39,23 +37,18 @@ export default function DashboardPage() {
     setAvailableFields,
     resetFormBuilder,
   } = useAppState();
-
   const [bases, setBases] = useState<AirtableBase[]>([]);
   const [tables, setTables] = useState<AirtableTable[]>([]);
   const [loadingBases, setLoadingBases] = useState(true);
   const [loadingTables, setLoadingTables] = useState(false);
   const [loadingFields, setLoadingFields] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Check auth on mount
   useEffect(() => {
     const token = getAuthToken();
     if (!token) {
       router.push("/");
       return;
     }
-
-    // Fetch bases
     setLoadingBases(true);
     fetchBases()
       .then(setBases)
@@ -69,14 +62,11 @@ export default function DashboardPage() {
       })
       .finally(() => setLoadingBases(false));
   }, [router]);
-
-  // Fetch tables when base changes
   useEffect(() => {
     if (!selectedBase) {
       setTables([]);
       return;
     }
-
     setLoadingTables(true);
     setSelectedTable(null);
     fetchTables(selectedBase.id)
@@ -84,41 +74,33 @@ export default function DashboardPage() {
       .catch(() => setError("Failed to load tables"))
       .finally(() => setLoadingTables(false));
   }, [selectedBase, setSelectedTable]);
-
-  // Fetch fields when table changes
   useEffect(() => {
     if (!selectedTable || !selectedBase) {
       setAvailableFields([]);
       return;
     }
-
     setLoadingFields(true);
     fetchFields(selectedBase.id, selectedTable.id)
       .then(setAvailableFields)
       .catch(() => setError("Failed to load fields"))
       .finally(() => setLoadingFields(false));
   }, [selectedTable, selectedBase, setAvailableFields]);
-
   const handleBaseChange = (baseId: string) => {
     const base = bases.find((b) => b.id === baseId) || null;
     setSelectedBase(base);
     resetFormBuilder();
   };
-
   const handleTableChange = (tableId: string) => {
     const table = tables.find((t) => t.id === tableId) || null;
     setSelectedTable(table);
   };
-
   const handleCreateForm = () => {
     router.push("/form-builder");
   };
-
   const handleLogout = () => {
     clearAuthToken();
     router.push("/");
   };
-
   return (
     <main className="min-h-screen bg-muted p-4">
       <div className="max-w-2xl mx-auto">
@@ -129,7 +111,6 @@ export default function DashboardPage() {
             Logout
           </Button>
         </div>
-
         {error && (
           <Card className="mb-4 border-destructive">
             <CardContent className="pt-4">
@@ -137,7 +118,6 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         )}
-
         <Card>
           <CardHeader>
             <CardTitle>Create a New Form</CardTitle>
@@ -146,7 +126,7 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Base Selection */}
+            {}
             <div className="space-y-2">
               <label className="text-sm font-medium">Select Base</label>
               {loadingBases ? (
@@ -172,7 +152,6 @@ export default function DashboardPage() {
                 </Select>
               )}
             </div>
-
             {/* Table Selection */}
             {selectedBase && (
               <div className="space-y-2">
@@ -201,7 +180,6 @@ export default function DashboardPage() {
                 )}
               </div>
             )}
-
             {/* Fields Preview */}
             {selectedTable && (
               <div className="space-y-2">
@@ -218,7 +196,6 @@ export default function DashboardPage() {
                 )}
               </div>
             )}
-
             {/* Create Form Button */}
             <Button
               onClick={handleCreateForm}
