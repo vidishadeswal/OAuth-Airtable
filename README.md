@@ -36,6 +36,10 @@ npm run dev
 
 ```
 
+### SCREEN RECORDING OF THE APP
+
+[Watch Demo Video](https://drive.google.com/file/d/1lu9L4STiMnSxmTQEZtinOQ31ptqMWaru/view?usp=sharing)
+
 ## Authentication Flow
 
 ```

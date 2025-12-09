@@ -44,6 +44,19 @@ mongoose
     console.error("✗ MongoDB connection failed:", err.message);
     process.exit(1);
   });
+app.get("/", (req, res) => {
+  res.json({
+    name: "Airtable Form Builder API",
+    status: "running",
+    version: "1.0.0",
+    endpoints: {
+      health: "/api/health",
+      auth: "/api/auth/*",
+      forms: "/api/forms/*",
+      webhooks: "/api/webhooks/*"
+    }
+  });
+});
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
